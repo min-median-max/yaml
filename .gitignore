@@ -1,0 +1,54 @@
+# Composer
+/vendor/
+composer.lock
+composer.phar
+
+# PHPUnit
+.phpunit.cache/
+/coverage/
+phpunit.xml.bak
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+*.log
+
+# Cache directories
+.cache/
+/build/
+/dist/
+
+# Temporary files
+*.tmp
+*.temp
+
+# Documentation build
+/docs/build/
+
+# Package files
+*.phar
+*.zip
+*.tar.gz
+
+# Rector
+rector.php.bak
+
+# PHP CS Fixer
+.php-cs-fixer.cache
+
+# PHPStan
+.phpstan.neon.bak

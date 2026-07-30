@@ -1,0 +1,15 @@
+parameters:
+    level: max
+    paths:
+        - src
+        - test
+
+    excludePaths:
+        - vendor
+        - coverage
+
+    ignoreErrors:
+        # Add specific ignores here if needed
+
+    bootstrapFiles:
+        - vendor/autoload.php

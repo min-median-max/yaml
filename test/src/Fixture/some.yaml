@@ -1,0 +1,31 @@
+.folders: &folders
+  - src: ./app/**
+    dest: /app
+  - assets: ./assets/**
+    dest: /assets
+
+config:
+  engine: "redis"
+  presence: true
+  history_size: 300
+  allow_subscribe_for_client: true
+
+service:
+  enabled: false
+  command:
+    - /bin/bash
+    - -exc
+    - |-
+      cp files
+  files: *folders
+
+affinity:
+  nodeAffinity:
+    preferredDuringSchedulingIgnoredDuringExecution:
+      - weight: 10
+        preference:
+          matchExpressions:
+            - key: topology.kubernetes.io/region
+              operator: NotIn
+              values:
+                - HEL

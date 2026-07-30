@@ -1,0 +1,15 @@
+# Whitelist: ignore everything, then allow only what Docker build needs
+
+**
+
+!composer.json
+!composer.lock
+!phpunit.xml
+!phpstan.neon.dist
+!.php-cs-fixer.dist.php
+
+!src/
+!src/**
+
+!test/
+!test/**

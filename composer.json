@@ -1,0 +1,73 @@
+{
+  "name": "purrphp/yaml",
+  "type": "library",
+  "description": "YAML utilities for PHP",
+  "license": "MIT",
+  "keywords": [
+    "php",
+    "yaml",
+    "serialization",
+    "configuration"
+  ],
+  "authors": [
+    {
+      "name": "PurrPHP",
+      "homepage": "https://github.com/purrphp"
+    }
+  ],
+  "homepage": "https://github.com/PurrPHP/yaml",
+  "support": {
+    "issues": "https://github.com/PurrPHP/yaml/issues",
+    "source": "https://github.com/PurrPHP/yaml"
+  },
+  "autoload": {
+    "psr-4": {
+      "Purr\\Yaml\\": "src/"
+    }
+  },
+  "autoload-dev": {
+    "psr-4": {
+      "Purr\\Yaml\\Test\\": [
+        "test/unit",
+        "test/src"
+      ],
+      "src\\": "test/src/"
+    }
+  },
+  "prefer-stable": true,
+  "minimum-stability": "dev",
+  "require": {
+    "php": "^8.3",
+    "purrphp/pure-collection": "^1.0"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "^10.0",
+    "friendsofphp/php-cs-fixer": "^3.0",
+    "phpstan/phpstan": "^1.0"
+  },
+  "scripts": {
+    "test": "vendor/bin/phpunit",
+    "test-coverage": "vendor/bin/phpunit --coverage-html coverage",
+    "coverage": "vendor/bin/phpunit --coverage-text --colors=never --coverage-clover coverage/clover.xml",
+    "cs-fix": "vendor/bin/php-cs-fixer fix",
+    "cs-check": "vendor/bin/php-cs-fixer fix --dry-run --diff",
+    "analyse": "vendor/bin/phpstan analyse --memory-limit=1G",
+    "refactor": "vendor/bin/rector process",
+    "check": [
+      "@cs-check",
+      "@analyse",
+      "@test"
+    ]
+  },
+  "config": {
+    "platform": {
+      "php": "8.3.0"
+    },
+    "process-timeout": 0,
+    "sort-packages": true,
+    "optimize-autoloader": true,
+    "allow-plugins": {
+      "composer/package-versions-deprecated": true
+    }
+  }
+}
