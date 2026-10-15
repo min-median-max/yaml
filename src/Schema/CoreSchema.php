@@ -27,15 +27,17 @@ use function sprintf;
  */
 final class CoreSchema implements SchemaInterface
 {
-    private const string NULL_PATTERN = '/^(?:~|null)$/i';
-    private const string TRUE_PATTERN = '/^true$/i';
-    private const string FALSE_PATTERN = '/^false$/i';
-    private const string DECIMAL_PATTERN = '/^[-+]?[0-9]+$/';
-    private const string OCTAL_PATTERN = '/^([-+]?)0o([0-7]+)$/';
-    private const string HEXADECIMAL_PATTERN = '/^([-+]?)0x([0-9a-f]+)$/i';
-    private const string FLOAT_PATTERN = '/^[-+]?(?:[0-9]+\.[0-9]*|\.[0-9]+|[0-9]+)(?:[eE][-+]?[0-9]+)?$/';
-    private const string INFINITY_PATTERN = '/^([-+])?\.inf$/i';
-    private const string NAN_PATTERN = '/^\.nan$/i';
+    // The patterns follow the tag resolution table of YAML 1.2.2, section 10.3.2, exactly:
+    // the letter cases are the listed ones only, and only decimal integers take a sign.
+    private const string NULL_PATTERN = '/^(?:null|Null|NULL|~)$/';
+    private const string TRUE_PATTERN = '/^(?:true|True|TRUE)$/';
+    private const string FALSE_PATTERN = '/^(?:false|False|FALSE)$/';
+    private const string DECIMAL_PATTERN = '/^([-+]?)([0-9]+)$/';
+    private const string OCTAL_PATTERN = '/^0o([0-7]+)$/';
+    private const string HEXADECIMAL_PATTERN = '/^0x([0-9a-fA-F]+)$/';
+    private const string FLOAT_PATTERN = '/^[-+]?(?:\.[0-9]+|[0-9]+(?:\.[0-9]*)?)(?:[eE][-+]?[0-9]+)?$/';
+    private const string INFINITY_PATTERN = '/^([-+]?)\.(?:inf|Inf|INF)$/';
+    private const string NAN_PATTERN = '/^\.(?:nan|NaN|NAN)$/';
 
     public function resolve(ScalarNode $node): mixed
     {
@@ -81,22 +83,24 @@ final class CoreSchema implements SchemaInterface
             return false;
         }
 
-        if (1 === preg_match(self::DECIMAL_PATTERN, $value)) {
-            $integer = filter_var($value, FILTER_VALIDATE_INT);
+        if (1 === preg_match(self::DECIMAL_PATTERN, $value, $matches)) {
+            // Leading zeros are decimal digits in the core schema, not an octal prefix.
+            $digits = ltrim($matches[2], '0');
+            $integer = filter_var($matches[1].('' === $digits ? '0' : $digits), FILTER_VALIDATE_INT);
 
             return false === $integer ? (float) $value : $integer;
         }
 
         if (1 === preg_match(self::OCTAL_PATTERN, $value, $matches)) {
-            return $this->applySign($matches[1], (int) octdec($matches[2]));
+            return (int) octdec($matches[1]);
         }
 
         if (1 === preg_match(self::HEXADECIMAL_PATTERN, $value, $matches)) {
-            return $this->applySign($matches[1], (int) hexdec($matches[2]));
+            return (int) hexdec($matches[1]);
         }
 
         if (1 === preg_match(self::INFINITY_PATTERN, $value, $matches)) {
-            return '-' === ($matches[1] ?? '') ? -INF : INF;
+            return '-' === $matches[1] ? -INF : INF;
         }
 
         if (1 === preg_match(self::NAN_PATTERN, $value)) {
@@ -108,11 +112,6 @@ final class CoreSchema implements SchemaInterface
         }
 
         return $value;
-    }
-
-    private function applySign(string $sign, int $number): int
-    {
-        return '-' === $sign ? -$number : $number;
     }
 
     private function resolveNumeric(string $value, int $line): float|int

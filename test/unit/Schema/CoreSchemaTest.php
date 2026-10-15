@@ -47,6 +47,23 @@ final class CoreSchemaTest extends TestCase
         yield 'hexadecimal' => ['0xFF', 255];
         yield 'float' => ['3.14', 3.14];
         yield 'exponent' => ['1.2e3', 1200.0];
+        yield 'leading zero decimal is an int' => ['0777', 777];
+        yield 'signed leading zero decimal is an int' => ['-007', -7];
+        yield 'signed hexadecimal stays a string' => ['+0x1', '+0x1'];
+        yield 'negative hexadecimal stays a string' => ['-0x1', '-0x1'];
+        yield 'signed octal stays a string' => ['-0o7', '-0o7'];
+        yield 'positive octal stays a string' => ['+0o7', '+0o7'];
+        yield 'uppercase hexadecimal prefix stays a string' => ['0X1F', '0X1F'];
+        yield 'uppercase octal prefix stays a string' => ['0O17', '0O17'];
+        yield 'null capitalized' => ['Null', null];
+        yield 'mixed case null stays a string' => ['nULL', 'nULL'];
+        yield 'mixed case true stays a string' => ['tRUE', 'tRUE'];
+        yield 'mixed case false stays a string' => ['fALSE', 'fALSE'];
+        yield 'false uppercase' => ['FALSE', false];
+        yield 'mixed case infinity stays a string' => ['.iNf', '.iNf'];
+        yield 'mixed case not a number stays a string' => ['.nAn', '.nAn'];
+        yield 'binary like stays a string' => ['0b101', '0b101'];
+        yield 'underscore int like stays a string' => ['1_000', '1_000'];
     }
 
     public function testResolve_InfinityAndNotANumberScalars_ResolvesThemToFloatConstants(): void
